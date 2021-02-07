@@ -4,9 +4,23 @@ import type { FromSchema } from "json-schema-to-ts";
 type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & { body: FromSchema<S> }
 export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<ValidatedAPIGatewayProxyEvent<S>, APIGatewayProxyResult>
 
-export const formatJSONResponse = (response: Record<string, unknown>) => {
+export const formatSuccessJSONResponse = (response: Record<string, unknown> | string) => {
   return {
     statusCode: 200,
-    body: JSON.stringify(response)
+    body: response
+  }
+}
+
+export const formatErrorJSONResponse = (response: Record<string, unknown> | string) => {
+  return {
+    statusCode: 400,
+    body: response
+  }
+}
+
+export const formatInternalErrorJSONResponse = (response: Record<string, unknown> | string) => {
+  return {
+    statusCode: 500,
+    body: response
   }
 }

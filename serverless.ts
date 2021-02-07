@@ -1,9 +1,9 @@
 import type { AWS } from '@serverless/typescript';
 
-import { hello } from './src/functions';
+import { scraper, clicker } from './src/functions';
 
 const serverlessConfiguration: AWS = {
-  service: 'serveless-typescript',
+  service: 'serveless-puppeteer',
   frameworkVersion: '2',
   custom: {
     webpack: {
@@ -16,15 +16,20 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs12.x',
     apiGateway: {
+      binaryMediaTypes: ['*/*'],
       minimumCompressionSize: 1024,
-      shouldStartNameWithService: true,
+      shouldStartNameWithService: true
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
     lambdaHashingVersion: '20201221',
+    timeout: 120
   },
-  functions: { hello }
+  functions: { scraper, clicker },
+  package: {
+    exclude: ['node_modules/puppeteer/.local-chromium/**']
+  }
 }
 
 module.exports = serverlessConfiguration;
