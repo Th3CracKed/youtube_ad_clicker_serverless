@@ -1,12 +1,13 @@
 import 'source-map-support/register';
 
-import { formatErrorJSONResponse } from '@libs/apiGateway';
+import { formatErrorJSONResponse, formatInternalErrorJSONResponse } from '@libs/apiGateway';
 import { formatSuccessJSONResponse } from '@libs/apiGateway';
 
 import { Browser } from 'puppeteer';
 import { waitForNavigation } from '../../helper';
-import { createHandler } from '../wrapper';
 import * as any from 'promise.any';
+import { APIGatewayEvent } from 'aws-lambda';
+import { APIResponse, getChrome } from 'src/utils';
 
 const clicker = async (browser: Browser, url: string) => {
   console.log('Clicker started...');
@@ -63,6 +64,25 @@ const clicker = async (browser: Browser, url: string) => {
     await page.waitForTimeout(2000); // wait for ads click to count
     page.close();
     return formatSuccessJSONResponse({ clickedSelector });
+  }
+}
+
+const createHandler = (
+  workFunction: (browser: Browser, url: string) => Promise<APIResponse>
+) => async (event: APIGatewayEvent): Promise<APIResponse> => {
+  const url = event?.queryStringParameters?.url;
+  if (!url) {
+      return formatErrorJSONResponse("Please provide a ?url= parameter");
+  }
+  const browser = await getChrome();
+  if (!browser) {
+      return formatInternalErrorJSONResponse("Error launching Chrome");
+  }
+  try {
+      const response = await workFunction(browser, url);
+      return response;
+  } catch (err) {
+      return formatInternalErrorJSONResponse({ msg: "Unhandled Error", err });
   }
 }
 

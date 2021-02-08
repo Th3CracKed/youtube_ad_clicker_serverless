@@ -1,0 +1,28 @@
+{
+    "Comment": "Scrape youtube urls from a channel",
+    "StartAt": "scraper",
+    "States": {
+      "scraper": {
+        "Type": "Task",
+        "Resource": "arn:scraper",
+        "ResultPath": "$",
+        "Next": "MapState"
+      },
+      "MapState": {
+        "InputPath": "$.body",
+        "Type": "Map",
+        "Iterator": {
+          "StartAt": "clicker",
+          "States": {
+            "clicker": {
+              "Comment": "Click on a youtube video ad",
+              "Type": "Task",
+              "Resource": "arn:clicker",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  }

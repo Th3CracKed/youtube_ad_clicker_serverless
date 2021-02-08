@@ -3,7 +3,7 @@ import * as chrome from "chrome-aws-lambda"
 export type APIResponse = {
   statusCode: number
   headers?: { [key: string]: string }
-  body: string | Buffer | Record<string, unknown>
+  body: any
   isBase64Encoded?: boolean
 }
 
