@@ -39,6 +39,7 @@ module.exports = {
             path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, '.serverless'),
             path.resolve(__dirname, '.webpack'),
+            path.resolve(__dirname, 'scripts'),
           ],
         ],
         options: {
