@@ -5,12 +5,15 @@
   "main": "serverless.ts",
   "scripts": {
     "start": "ts-node scripts/runLambda.ts",
+    "scraper": "sls invoke local -f scraper --path src/functions/scraper/mock.json",
+    "clicker": "sls invoke local -f clicker --path src/functions/clicker/mock.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@middy/core": "^1.5.0",
     "@middy/http-json-body-parser": "^1.5.0",
     "chrome-aws-lambda": "^5.5.0",
+    "commander": "^7.0.0",
     "promise.any": "^2.0.1",
     "puppeteer-core": "^5.5.0",
     "source-map-support": "^0.5.19"
