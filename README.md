@@ -1,8 +1,6 @@
-# Serverless - AWS Node.js Typescript
+# Serverless - Youtube ad clicker
 
-This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
-
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
+- This project is created for learning purposes. Using it is against the Youtube terms.  
 
 ## Installation/deployment instructions
 
@@ -22,34 +20,41 @@ Depending on your preferred package manager, follow the instructions below to de
 
 ## Test your service
 
-This template contains a single lambda function triggered by an HTTP request made on the provisioned API Gateway REST API `/hello` route with `POST` method. The request body must be provided as `application/json`. The body structure is tested by API Gateway against `src/functions/hello/schema.ts` JSON-Schema definition: it must contain the `name` property.
+This project contains a two lambda functions triggered by an HTTP request made on the provisioned API Gateway REST API `/scraper` route with `GET` method and `/clicker` route with `GET` method. The request must include a `url` **param** like /scraper?url=https://www.youtube.com/c/channelName/videos.
 
-- requesting any other path than `/hello` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
-- sending a `POST` request to `/hello` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code
-- sending a `POST` request to `/hello` with a payload containing a string property named `name` will result in API Gateway returning a `200` HTTP status code with a message saluting the provided name and the detailed event processed by the lambda
+The `/scraper` Endpoint support an optional `nbOfExecution` **param** to duplicates the scraped urls as needed
 
-> :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
+- requesting any other path than `/scraper` or `/clicker` with any other method than `GET` will result in API Gateway returning a `403` HTTP error code
+- sending a `GET` request to `/scraper` or `/clicker` without a `url` **param** 
+- sending a `GET` request to `/scraper` or `/clicker` with a `url` **param** will result in API Gateway returning a `200` HTTP status code with a body message containing the lambda response. For the `/scraper` endpoint the response is the last 30 videos urls (if available), For the `/clicker` endpoint the response is the clicked ad selector id or empty body in case the ad was not clicked. 
+
+> :warning: As is, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
 
 ### Locally
 
-In order to test the hello function locally, run the following command:
+In order to test the functions locally, update `mock.json` with the Youtube url, then run the following command:
 
-- `npx sls invoke local -f hello --path src/functions/hello/mock.json` if you're using NPM
-- `yarn sls invoke local -f hello --path src/functions/hello/mock.json` if you're using Yarn
+- `npm run scraper` to scrape channel urls
+- `npm run clicker` to click ads on youtube videos
 
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 
 ### Remotely
 
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
+Copy and replace your `url` - found in Serverless `deploy` command output - and `url` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
 
 ```
-curl --location --request POST 'https://myApiEndpoint/dev/hello' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "name": "Frederic"
-}'
+curl --location --request GET 'https://myApiEndpoint/dev/scraper?url=https://www.youtube.com/c/channelName/videos' \
+curl --location --request GET 'https://myApiEndpoint/dev/clicker?url=https://www.youtube.com/watch?v=video_id' \
 ```
+
+# Step functions
+
+- This project include a step functions template to connect the two lambdas 
+
+# Local Script
+
+- `$ npm run start -- --url https://www.youtube.com/user/channelName/videos --nbOfExecution 2` to run a cli to invoke the lambdas via aws sdk.  
 
 ## Template features
 
@@ -64,11 +69,14 @@ The project code base is mainly located within the `src` folder. This folder is 
 .
 ├── src
 │   ├── functions            # Lambda configuration and source code folder
-│   │   ├── hello
-│   │   │   ├── handler.ts   # `Hello` lambda source code
-│   │   │   ├── index.ts     # `Hello` lambda Serverless configuration
-│   │   │   ├── mock.json    # `Hello` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts    # `Hello` lambda input event JSON-Schema
+│   │   ├── scraper
+│   │   │   ├── handler.ts   # `Scraper` lambda source code
+│   │   │   ├── index.ts     # `Scraper` lambda Serverless configuration
+│   │   │   └── mock.json    # `Scraper` lambda input parameter, if any, for local invocation
+│   │   ├── clicker
+│   │   │   ├── handler.ts   # `Clicker` lambda source code
+│   │   │   ├── index.ts     # `Clicker` lambda Serverless configuration
+│   │   │   └── mock.json    # `Clicker` lambda input parameter, if any, for local invocation
 │   │   │
 │   │   └── index.ts         # Import/export of all lambda configurations
 │   │
