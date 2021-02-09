@@ -46,6 +46,7 @@ const createHandler = (
   }
   try {
     const response = await workFunction(browser, url);
+    await browser.close();
     return nbOfExecutionWrapper(response, nbOfExecution);
   } catch (err) {
     return formatInternalErrorJSONResponse({ msg: "Unhandled Error", err });

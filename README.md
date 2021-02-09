@@ -20,7 +20,7 @@ Depending on your preferred package manager, follow the instructions below to de
 
 ## Test your service
 
-This project contains a two lambda functions triggered by an HTTP request made on the provisioned API Gateway REST API `/scraper` route with `GET` method and `/clicker` route with `GET` method. The request must include a `url` **param** like /scraper?url=https://www.youtube.com/c/channelName/videos.
+This project contains a two lambda functions triggered by an HTTP request made on the provisioned API Gateway REST API `/scraper` route with `GET` method and `/clicker` route with `GET` method. The request must include a `url` **param** like `/scraper?url=https://www.youtube.com/c/channelName/videos`.
 
 The `/scraper` Endpoint support an optional `nbOfExecution` **param** to duplicates the scraped urls as needed
 
@@ -50,7 +50,7 @@ curl --location --request GET 'https://myApiEndpoint/dev/clicker?url=https://www
 
 # Step functions
 
-- This project include a step functions template to connect the two lambdas 
+- This project include a step functions template to connect the two lambdas, make sure you change the arn to Yours.
 
 # Local Script
 
