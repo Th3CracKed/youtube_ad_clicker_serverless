@@ -1,9 +1,9 @@
 
 import * as AWS from 'aws-sdk';
-// AWS.config.region = 'us-east-1';
+AWS.config.region = 'us-east-1';
 const lambda = new AWS.Lambda();
 
-invoke('serveless-puppeteer-dev-scraper', 'https://www.youtube.com/user/channel/videos', (data) => {
+invoke('serveless-puppeteer-dev-scraper', 'https://www.youtube.com/user/choufmedia/videos', (data) => {
     const response = JSON.parse(data.Payload.toString());
     console.log(JSON.stringify(response, null, 2));
     const { body, statusCode: lambdaResponseStatusCode } = response;

@@ -2,7 +2,7 @@
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "lib": [
-      "ESNext",
+      "ES2019",
       "dom"
     ],
     "moduleResolution": "node",
@@ -14,7 +14,8 @@
     "outDir": "lib"
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "scripts/**/*.ts"
   ],
   "exclude": [
     "node_modules/**/*",
