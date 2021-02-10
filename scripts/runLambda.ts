@@ -18,6 +18,7 @@ options.nbOfExecution = Number(options.nbOfExecution);
 if (options.nbOfExecution && (!Number.isInteger(options.nbOfExecution) || options.nbOfExecution < 1)) {
     throw new Error('Number of execution must be 1 or bigger');
 }
+AWS.config.update({ httpOptions: { timeout: 360000 } });
 
 const lambda = new AWS.Lambda();
 
