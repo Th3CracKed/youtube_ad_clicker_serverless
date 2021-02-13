@@ -6,7 +6,7 @@ import { formatSuccessJSONResponse } from '@libs/apiGateway';
 import { Browser, Page } from 'puppeteer';
 import { waitForNavigation } from '../../helper';
 import * as any from 'promise.any';
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, SQSEvent } from 'aws-lambda';
 import { APIResponse, getChrome } from 'src/utils';
 
 const clicker = async (browser: Browser, url: string) => {
@@ -40,18 +40,19 @@ const clicker = async (browser: Browser, url: string) => {
     console.log(`${clickedSelector} selector is clicked`);
   } catch (err) {
     console.log(err);
-    return formatErrorJSONResponse({ err });
+    return formatSuccessJSONResponse({ clicked: false, err });
   } finally {
     await page.waitForTimeout(2000); // wait for ads click to count
     page.close();
-    return formatSuccessJSONResponse({ clickedSelector });
+    return formatSuccessJSONResponse({ clicked: true, clickedSelector });
   }
 }
 
 const createHandler = (
   workFunction: (browser: Browser, url: string) => Promise<APIResponse>
-) => async (event: APIGatewayEvent): Promise<APIResponse> => {
-  const url = event?.queryStringParameters?.url;
+) => async (event: APIGatewayEvent | SQSEvent): Promise<APIResponse> => {
+  console.log(event);
+  const url = 'queryStringParameters' in event ? event?.queryStringParameters?.url : event?.Records[0].body;
   if (!url) {
     return formatErrorJSONResponse("Please provide a ?url= parameter");
   }

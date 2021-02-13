@@ -11,7 +11,7 @@ Depending on your preferred package manager, follow the instructions below to de
 ### Using NPM
 
 - Run `npm i` to install the project dependencies
-- Run `npx sls deploy` to deploy this stack to AWS
+- Run `npx sls deploy --ACCOUNT_ID your_aws_account_id` to deploy this stack to AWS
 
 ### Using Yarn
 
@@ -39,7 +39,7 @@ In order to test the functions locally, update `mock.json` with the Youtube url,
 
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 
-### Remotely
+### Via endpoint
 
 Copy and replace your `url` - found in Serverless `deploy` command output - and `url` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
 
@@ -48,7 +48,12 @@ curl --location --request GET 'https://myApiEndpoint/dev/scraper?url=https://www
 curl --location --request GET 'https://myApiEndpoint/dev/clicker?url=https://www.youtube.com/watch?v=video_id' \
 ```
 
-# Step functions
+# Via SQS
+
+- Run curl --location --request GET 'https://myApiEndpoint/dev/scraperToQueue?url=https://www.youtube.com/c/channelName/videos' \
+- The endpoint support an optional `nbOfExecution` **param** to define the number of clicker to run per video.
+
+# Via Step functions
 
 - This project include a step functions template to connect the two lambdas, make sure you change the arn to Yours.
 
@@ -67,12 +72,17 @@ The project code base is mainly located within the `src` folder. This folder is 
 
 ```
 .
+├── scripts # scripts to invoke lambdas via aws-sdk
 ├── src
 │   ├── functions            # Lambda configuration and source code folder
 │   │   ├── scraper
 │   │   │   ├── handler.ts   # `Scraper` lambda source code
 │   │   │   ├── index.ts     # `Scraper` lambda Serverless configuration
 │   │   │   └── mock.json    # `Scraper` lambda input parameter, if any, for local invocation
+│   │   ├── scraperToQueue
+│   │   │   ├── handler.ts   # `ScraperToQueue` lambda source code
+│   │   │   ├── index.ts     # `ScraperToQueue` lambda Serverless configuration
+│   │   │   └── mock.json    # `ScraperToQueue` lambda input parameter, if any, for local invocation
 │   │   ├── clicker
 │   │   │   ├── handler.ts   # `Clicker` lambda source code
 │   │   │   ├── index.ts     # `Clicker` lambda Serverless configuration

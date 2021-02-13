@@ -1,6 +1,5 @@
-
-import * as AWS from 'aws-sdk';
-AWS.config.region = 'us-east-1';
+import * as Lambda from 'aws-sdk/clients/lambda'
+const region = 'us-east-1';
 import { program } from 'commander';
 
 program
@@ -18,9 +17,8 @@ options.nbOfExecution = Number(options.nbOfExecution);
 if (options.nbOfExecution && (!Number.isInteger(options.nbOfExecution) || options.nbOfExecution < 1)) {
     throw new Error('Number of execution must be 1 or bigger');
 }
-AWS.config.update({ httpOptions: { timeout: 360000 } });
 
-const lambda = new AWS.Lambda();
+const lambda = new Lambda({ region, httpOptions: { timeout: 360000 } });
 
 invoke('serveless-puppeteer-dev-scraper', options.url, (data) => {
     const response = JSON.parse(data.Payload.toString());
@@ -37,7 +35,7 @@ invoke('serveless-puppeteer-dev-scraper', options.url, (data) => {
     }
 });
 
-function invoke(functionName: string, url: string, callback?: (data: AWS.Lambda.InvocationResponse) => void) {
+function invoke(functionName: string, url: string, callback?: (data: Lambda.InvocationResponse) => void) {
     console.log(`Invoking ${functionName} with ${url}`);
     const params = {
         FunctionName: functionName,
